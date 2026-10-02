@@ -1,0 +1,93 @@
+{
+  "openapi": "3.0.3",
+  "info": {
+    "title": "DocuMind API - Especificación Formal",
+    "version": "1.0.0",
+    "description": "API REST para gestión de documentos, búsqueda semántica y RAG desarrollada con Express 5 y TypeScript."
+  },
+  "servers": [
+    {
+      "url": "http://localhost:3004/api",
+      "description": "Servidor de Desarrollo Local"
+    }
+  ],
+  "paths": {
+  "/books/{isbn}": {
+    "get": {
+      "summary": "Consultar libro por ISBN",
+      "description": "Devuelve un libro del catálogo a partir de su ISBN.",
+      "tags": ["Libros"],
+      "parameters": [
+        {
+          "name": "isbn",
+          "in": "path",
+          "required": true,
+          "description": "ISBN del libro",
+          "schema": { "type": "string", "example": "978-0132350884" }
+        }
+      ],
+      "responses": {
+        "200": {
+          "description": "Libro encontrado",
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "status": { "type": "string", "example": "success" },
+                  "data": { "$ref": "#/components/schemas/Book" }
+                }
+              }
+            }
+          }
+        },
+        "404": {
+          "description": "El libro no existe en el catálogo",
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/ErrorResponse" }
+            }
+          }
+        }
+      }
+    }
+  }
+},
+  "components": {
+    "schemas": {
+      "Book": {
+        "type": "object",
+        "properties": {
+          "id": { "type": "integer", "example": 1 },
+          "title": { "type": "string", "example": "Clean Code en TypeScript" },
+          "isbn": { "type": "string", "example": "978-0132350884" },
+          "author": { "type": "string", "example": "Robert C. Martin" },
+          "tags": { "type": "array", "items": { "type": "string" }, "example": ["typescript", "clean-code"] },
+          "createdAt": { "type": "string", "format": "date-time" },
+          "publishedYear": { "type": "integer", "minimum": 1450, "example": 2008 },
+          "availableCopies": { "type": "integer", "minimum": 0, "example": 5 }  
+        }
+      },
+      "CreateBookPayload": {
+        "type": "object",
+        "required": ["title", "content", "author"],
+        "properties": {
+          "title": { "type": "string", "minLength": 3, "maxLength": 120 },
+          "isbn": { "type": "string", "example": "978-0132350884" },
+          "author": { "type": "string", "minLength": 2 },
+          "tags": { "type": "array", "items": { "type": "string" }, "default": [] },
+          "publishedYear": { "type": "integer", "minimum": 1450, "example": 2008 }
+        }
+      },
+      "ErrorResponse": {
+        "type": "object",
+        "properties": {
+          "status": { "type": "string", "example": "fail" },
+          "error": { "type": "string", "example": "ValidationError" },
+          "message": { "type": "string" },
+          "details": { "type": "array", "items": { "type": "object" } }
+        }
+      }
+    }
+  }
+}

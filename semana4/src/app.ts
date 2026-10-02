@@ -1,7 +1,8 @@
 // src/app.ts
 import express from "express";
 import swaggerUi from "swagger-ui-express";
-import openapiSpec from "./docs/openapi.json" with { type: "json" };
+//import openapiSpec from "./docs/openapi.json" with { type: "json" };
+import openapiSpec from "./docs/books.openapi.json" with { type: "json" };
 
 export const app = express();
 
@@ -11,7 +12,7 @@ app.use(express.json());
 app.use("/api/docs", swaggerUi.serve, swaggerUi.setup(openapiSpec));
 
 // Endpoint mock para validar en vivo el contrato:
-app.get("/api/documents", (_req, res) => {
+app.get("/api/books", (_req, res) => {
   res.json({
     status: "success",
     count: 1,
